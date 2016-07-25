@@ -24,6 +24,11 @@ public class MainActivity extends ActionBarActivity {
 	public final static String RESUME_MESSAGE = "de.fgl.tryout.android.training001.MainAcitvity.RESUMEMESSAGE";
 	public final static String RESUME_MESSAGE_BUNDLE = "de.fgl.tryout.android.training001.MainAcitvity.RESUMEMESSAGEBUNDLE";
 	private final String KEY_MESSAGE_CURRENT="currentMessage";
+	
+	//Folgende Texte werden beim Zurückkehren aus der "DisplayMessageActivity" an den Sende String gehängt. Je nachdem welcher Weg gewählt wurde.
+	private final String MESSAGE_ADDITION_VARIABLE="(wiederhergestellt per Variable)";
+	private final String MESSAGE_ADDITION_BUNDLE="(wiederhergestellt per Intent und Bundle)";
+	private final String MESSAGE_ADDITION_INTENT="(wiederhergestellt per Intent)";
 	private String sMessageCurrent;
  
 	protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +89,18 @@ public class MainActivity extends ActionBarActivity {
 		Intent intent = new Intent(this, DisplayMessageActivity.class);
 		EditText editText = (EditText) findViewById(R.id.edit_message);
 		String message = editText.getText().toString();
+		
+		//Aber: In diesem String ist ggfs. noch zusätzlicher Text enthalten, den es jetzt zu entfernen gilt, sonst kommt er ggfs. doppelt zurück.
+		String sPattern = "$" + this.MESSAGE_ADDITION_VARIABLE + "";
+		Log.d("FGLSTATE", "sendMessage(): regesxpattern = " + sPattern);
+		message = message.replaceAll(sPattern, "");
+		sPattern = "$" + this.MESSAGE_ADDITION_INTENT + "";
+		Log.d("FGLSTATE", "sendMessage(): regesxpattern = " + sPattern);
+		message = message.replaceAll(sPattern, "");
+		sPattern = "$" + this.MESSAGE_ADDITION_BUNDLE + "";
+		Log.d("FGLSTATE", "sendMessage(): regesxpattern = " + sPattern);
+		message = message.replaceAll(sPattern, "");
+		Log.d("FGLSTATE", "sendessage(): message nach der Normierung = " + message);
 		
 		//Speichere die message in eine lokale Variable. Grund: So kann man sie dann wegsichern wenn sich der State des Geräts ändert.
 		this.setMessageCurrent(message);
@@ -167,7 +184,7 @@ public class MainActivity extends ActionBarActivity {
 		if(sMessageCurrent!=null){
 	    	//Sollte man nun irgendwie den String zurück-/einsetzen?
 	    	EditText editText = (EditText) findViewById(R.id.edit_message);
-			editText.setText(sMessageCurrent + " (wiederhergestellt per Variable)");
+			editText.setText(sMessageCurrent + " " + this.MESSAGE_ADDITION_VARIABLE);
 		}else{
 			//Das ist der Normalefall: Die Variable ist nämlich weg.
 			//Nun Versuch sie in inStop() über einen Intent.getExtras zu sichern und hier wiederherzustellen
@@ -177,7 +194,7 @@ public class MainActivity extends ActionBarActivity {
 			//DAS FUNKTIONIERT AUCH NICHT!!!
 			if(sMessageCurrent!=null){
 				EditText editText = (EditText) findViewById(R.id.edit_message);
-				editText.setText(sMessageCurrent + " (wiederhergestellt per Intent)");
+				editText.setText(sMessageCurrent + " " + this.MESSAGE_ADDITION_INTENT);
 			}else{
 				Bundle bundle = getIntent().getExtras();
 				if(bundle!=null){
@@ -185,7 +202,7 @@ public class MainActivity extends ActionBarActivity {
 					Log.d("FGLSTATE", "onResume(): Wert per intent und bundle sMessageCurrent = " + sMessageCurrent);
 					
 					EditText editText = (EditText) findViewById(R.id.edit_message);
-					editText.setText(sMessageCurrent + " (wiederhergestellt per Intent und Bundle)");
+					editText.setText(sMessageCurrent + " " + this.MESSAGE_ADDITION_BUNDLE);
 				}else{
 					Log.d("FGLSTATE", "onResume(): Bundle ist auch im neuen intent leer");
 					
