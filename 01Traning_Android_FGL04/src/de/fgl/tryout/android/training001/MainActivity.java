@@ -1,6 +1,7 @@
 package de.fgl.tryout.android.training001;
 
 
+import basic.zBasic.util.datatype.string.StringZZZ;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -90,16 +91,10 @@ public class MainActivity extends ActionBarActivity {
 		EditText editText = (EditText) findViewById(R.id.edit_message);
 		String message = editText.getText().toString();
 		
-		//Aber: In diesem String ist ggfs. noch zusätzlicher Text enthalten, den es jetzt zu entfernen gilt, sonst kommt er ggfs. doppelt zurück.
-		String sPattern = "$" + this.MESSAGE_ADDITION_VARIABLE + "";
-		Log.d("FGLSTATE", "sendMessage(): regesxpattern = " + sPattern);
-		message = message.replaceAll(sPattern, "");
-		sPattern = "$" + this.MESSAGE_ADDITION_INTENT + "";
-		Log.d("FGLSTATE", "sendMessage(): regesxpattern = " + sPattern);
-		message = message.replaceAll(sPattern, "");
-		sPattern = "$" + this.MESSAGE_ADDITION_BUNDLE + "";
-		Log.d("FGLSTATE", "sendMessage(): regesxpattern = " + sPattern);
-		message = message.replaceAll(sPattern, "");
+		//Besser als das Standard String.replace und Pattern zu verwenden ist hier die JAZKernel-Hilfsklasse
+		message = StringZZZ.replace(message, this.MESSAGE_ADDITION_VARIABLE, "");
+		message = StringZZZ.replace(message, this.MESSAGE_ADDITION_INTENT, "");
+		message = StringZZZ.replace(message, this.MESSAGE_ADDITION_BUNDLE, "");		
 		Log.d("FGLSTATE", "sendessage(): message nach der Normierung = " + message);
 		
 		//Speichere die message in eine lokale Variable. Grund: So kann man sie dann wegsichern wenn sich der State des Geräts ändert.
