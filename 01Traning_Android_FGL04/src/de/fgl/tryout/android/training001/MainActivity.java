@@ -104,6 +104,44 @@ public class MainActivity extends ActionBarActivity {
 		startActivity(intent);
 	}
 	
+	
+	/** Called when the user clicks the SendForResult button */
+	public void sendMessageForResult(View view) {
+	    //Start an intent
+		Intent intent = new Intent(this, DisplayMessageActivityForResult.class);
+		EditText editText = (EditText) findViewById(R.id.edit_message);
+		String message = editText.getText().toString();
+		
+		//Besser als das Standard String.replace und Pattern zu verwenden ist hier die JAZKernel-Hilfsklasse
+		message = StringZZZ.replace(message, this.MESSAGE_ADDITION_VARIABLE, "");
+		message = StringZZZ.replace(message, this.MESSAGE_ADDITION_INTENT, "");
+		message = StringZZZ.replace(message, this.MESSAGE_ADDITION_BUNDLE, "");		
+		Log.d("FGLSTATE", "sendessageForResult(): message nach der Normierung = " + message);
+		
+		//Speichere die message in eine lokale Variable. Grund: So kann man sie dann wegsichern wenn sich der State des Geräts ändert.
+		this.setMessageCurrent(message);
+				
+		intent.putExtra(EXTRA_MESSAGE, message);
+		startActivityForResult(intent,1);
+	}
+	
+	
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onActivityResult(int, int, android.content.Intent)
+	 * 27.07.2016 09:09:40 Fritz Lindhauer
+	 */
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		Log.d("FGLSTATE", "onActivityResult(): START mit requestCode='" + requestCode + "' | resultCode='"+resultCode+"'");
+	    super.onActivityResult(requestCode, resultCode, data);	    
+	    if (requestCode == 1) {
+	         if(resultCode == RESULT_OK){
+	             String stredittext=data.getStringExtra(this.EXTRA_MESSAGE);
+	             Log.d("FGLSTATE", "onActivityResult(): message  empfangen = " + stredittext);
+	     		
+	         }     
+	    }
+	} 
+	
 	/**
 	 * @param message
 	 * 15.07.2016 08:26:09 Fritz Lindhauer
