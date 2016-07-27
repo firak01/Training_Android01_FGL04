@@ -30,6 +30,7 @@ public class MainActivity extends ActionBarActivity {
 	private final String MESSAGE_ADDITION_VARIABLE="(wiederhergestellt per Variable)";
 	private final String MESSAGE_ADDITION_BUNDLE="(wiederhergestellt per Intent und Bundle)";
 	private final String MESSAGE_ADDITION_INTENT="(wiederhergestellt per Intent)";
+	private final String MESSAGE_ADDITION_RESULT="(als Result)";
 	private String sMessageCurrent;
  
 	protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +95,8 @@ public class MainActivity extends ActionBarActivity {
 		//Besser als das Standard String.replace und Pattern zu verwenden ist hier die JAZKernel-Hilfsklasse
 		message = StringZZZ.replace(message, this.MESSAGE_ADDITION_VARIABLE, "");
 		message = StringZZZ.replace(message, this.MESSAGE_ADDITION_INTENT, "");
-		message = StringZZZ.replace(message, this.MESSAGE_ADDITION_BUNDLE, "");		
+		message = StringZZZ.replace(message, this.MESSAGE_ADDITION_BUNDLE, "");	
+		message = StringZZZ.replace(message, this.MESSAGE_ADDITION_RESULT,"");
 		Log.d("FGLSTATE", "sendessage(): message nach der Normierung = " + message);
 		
 		//Speichere die message in eine lokale Variable. Grund: So kann man sie dann wegsichern wenn sich der State des Geräts ändert.
@@ -116,6 +118,7 @@ public class MainActivity extends ActionBarActivity {
 		message = StringZZZ.replace(message, this.MESSAGE_ADDITION_VARIABLE, "");
 		message = StringZZZ.replace(message, this.MESSAGE_ADDITION_INTENT, "");
 		message = StringZZZ.replace(message, this.MESSAGE_ADDITION_BUNDLE, "");		
+		message = StringZZZ.replace(message, this.MESSAGE_ADDITION_RESULT,"");
 		Log.d("FGLSTATE", "sendessageForResult(): message nach der Normierung = " + message);
 		
 		//Speichere die message in eine lokale Variable. Grund: So kann man sie dann wegsichern wenn sich der State des Geräts ändert.
@@ -134,11 +137,13 @@ public class MainActivity extends ActionBarActivity {
 		Log.d("FGLSTATE", "onActivityResult(): START mit requestCode='" + requestCode + "' | resultCode='"+resultCode+"'");
 	    super.onActivityResult(requestCode, resultCode, data);	    
 	    if (requestCode == 1) {
-	         if(resultCode == RESULT_OK){
-	             String stredittext=data.getStringExtra(this.EXTRA_MESSAGE);
-	             Log.d("FGLSTATE", "onActivityResult(): message  empfangen = " + stredittext);
-	     		
-	         }     
+	    		String stredittext=data.getStringExtra(this.EXTRA_MESSAGE);
+	         if(resultCode == RESULT_OK){	             
+	             Log.d("FGLSTATE", "onActivityResult(): result OK. message  empfangen = " + stredittext);
+	             this.setMessageCurrent(stredittext);
+	         }else{	        	
+	        	 Log.d("FGLSTATE", "onActivityResult(): result nicht OK. message  empfangen = " + stredittext);
+	         }
 	    }
 	} 
 	

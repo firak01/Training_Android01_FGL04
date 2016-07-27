@@ -135,9 +135,10 @@ public class DisplayMessageActivity extends ActionBarActivity { //Activity
             //Start an intent mit dem Ziel diesen in der onResume Methpde entgegenzunehmen.
     		Intent intent = new Intent(this, MainActivity.class);	    		
     		intent.putExtras(bundle);
-    		//erst mal ohne start 
-    		startActivity(intent); //klappt nicht.
-    		//startActivity(intent);
+      		startActivity(intent); //Merke: Nachteil ist, das jeder Activity-Start quasi in eine History kommt. 
+      		                       //       Das bedeutet, dass der Zurück-Button des Geräts erst einmal alle Activities aus der Historie durchläuft,
+      		                       //       wenn man ihn in der Hauptmaske betätigt.
+    		
 			
 		}else{
 			Log.d("FGLSTATE", "onOptionsItemSelected() für speziell definierte actionBarId NICHT gefunden.");
