@@ -21,16 +21,16 @@ import android.widget.EditText;
  *
  */
 public class MainActivity extends ActionBarActivity {
-	public final static String EXTRA_MESSAGE = "de.fgl.tryout.android.training001.MainAcitvity.MESSAGE";
-	public final static String RESUME_MESSAGE = "de.fgl.tryout.android.training001.MainAcitvity.RESUMEMESSAGE";
-	public final static String RESUME_MESSAGE_BUNDLE = "de.fgl.tryout.android.training001.MainAcitvity.RESUMEMESSAGEBUNDLE";
-	private final String KEY_MESSAGE_CURRENT="currentMessage";
+	//public final static String EXTRA_MESSAGE = "de.fgl.tryout.android.training001.MainAcitvity.MESSAGE";
+	//public final static String RESUME_MESSAGE = "de.fgl.tryout.android.training001.MainAcitvity.RESUMEMESSAGE";
+	//public final static String RESUME_MESSAGE_BUNDLE = "de.fgl.tryout.android.training001.MainAcitvity.RESUMEMESSAGEBUNDLE";
+	//private final String KEY_MESSAGE_CURRENT="currentMessage";
 	
 	//Folgende Texte werden beim Zurückkehren aus der "DisplayMessageActivity" an den Sende String gehängt. Je nachdem welcher Weg gewählt wurde.
-	private final String MESSAGE_ADDITION_VARIABLE="(wiederhergestellt per Variable)";
-	private final String MESSAGE_ADDITION_BUNDLE="(wiederhergestellt per Intent und Bundle)";
-	private final String MESSAGE_ADDITION_INTENT="(wiederhergestellt per Intent)";
-	private final String MESSAGE_ADDITION_RESULT="(als Result)";
+	//private final String MESSAGE_ADDITION_VARIABLE="(wiederhergestellt per Variable)";
+	//private final String MESSAGE_ADDITION_BUNDLE="(wiederhergestellt per Intent und Bundle)";
+	//private final String MESSAGE_ADDITION_INTENT="(wiederhergestellt per Intent)";
+	//private final String MESSAGE_ADDITION_RESULT="(als Result)";
 	private String sMessageCurrent;
  
 	protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +50,7 @@ public class MainActivity extends ActionBarActivity {
 			Log.d("FGLSTATE", "onCreate() wurde aktiviert. MIT SAVEDINSTANCESTATE vorhanden");
 			 
         	//Notwendiger Zweig um Persistierung zurückzuholen. Siehe auch onResume().
-        	String sMessageCurrent = (String) savedInstanceState.getSerializable(KEY_MESSAGE_CURRENT);
+        	String sMessageCurrent = (String) savedInstanceState.getSerializable(MyMessageHandler.KEY_MESSAGE_CURRENT);
         	Log.d("FGLSTATE", "onCreate(): sMessageCurrent = " + sMessageCurrent);
 			
         	if(sMessageCurrent!=null){
@@ -93,16 +93,16 @@ public class MainActivity extends ActionBarActivity {
 		String message = editText.getText().toString();
 		
 		//Besser als das Standard String.replace und Pattern zu verwenden ist hier die JAZKernel-Hilfsklasse
-		message = StringZZZ.replace(message, this.MESSAGE_ADDITION_VARIABLE, "");
-		message = StringZZZ.replace(message, this.MESSAGE_ADDITION_INTENT, "");
-		message = StringZZZ.replace(message, this.MESSAGE_ADDITION_BUNDLE, "");	
-		message = StringZZZ.replace(message, this.MESSAGE_ADDITION_RESULT,"");
+		message = StringZZZ.replace(message, MyMessageHandler.MESSAGE_ADDITION_VARIABLE, "");
+		message = StringZZZ.replace(message, MyMessageHandler.MESSAGE_ADDITION_INTENT, "");
+		message = StringZZZ.replace(message, MyMessageHandler.MESSAGE_ADDITION_BUNDLE, "");	
+		message = StringZZZ.replace(message, MyMessageHandler.MESSAGE_ADDITION_RESULT,"");
 		Log.d("FGLSTATE", "sendessage(): message nach der Normierung = " + message);
 		
 		//Speichere die message in eine lokale Variable. Grund: So kann man sie dann wegsichern wenn sich der State des Geräts ändert.
 		this.setMessageCurrent(message);
 				
-		intent.putExtra(EXTRA_MESSAGE, message);
+		intent.putExtra(MyMessageHandler.EXTRA_MESSAGE, message);
 		startActivity(intent);
 	}
 	
@@ -114,17 +114,15 @@ public class MainActivity extends ActionBarActivity {
 		EditText editText = (EditText) findViewById(R.id.edit_message);
 		String message = editText.getText().toString();
 		
-		//Besser als das Standard String.replace und Pattern zu verwenden ist hier die JAZKernel-Hilfsklasse
-		message = StringZZZ.replace(message, this.MESSAGE_ADDITION_VARIABLE, "");
-		message = StringZZZ.replace(message, this.MESSAGE_ADDITION_INTENT, "");
-		message = StringZZZ.replace(message, this.MESSAGE_ADDITION_BUNDLE, "");		
-		message = StringZZZ.replace(message, this.MESSAGE_ADDITION_RESULT,"");
+		message = MyMessageHandler.createNormedMessage(message);
+		
+		//Besser als das Standard String.replace und Pattern zu verwenden ist hier die JAZKernel-Hilfsklasse		
 		Log.d("FGLSTATE", "sendessageForResult(): message nach der Normierung = " + message);
 		
 		//Speichere die message in eine lokale Variable. Grund: So kann man sie dann wegsichern wenn sich der State des Geräts ändert.
 		this.setMessageCurrent(message);
 				
-		intent.putExtra(EXTRA_MESSAGE, message);
+		intent.putExtra(MyMessageHandler.EXTRA_MESSAGE, message);
 		startActivityForResult(intent,1);
 	}
 	
@@ -137,7 +135,7 @@ public class MainActivity extends ActionBarActivity {
 		Log.d("FGLSTATE", "onActivityResult(): START mit requestCode='" + requestCode + "' | resultCode='"+resultCode+"'");
 	    super.onActivityResult(requestCode, resultCode, data);	    
 	    if (requestCode == 1) {
-	    		String stredittext=data.getStringExtra(this.EXTRA_MESSAGE);
+	    		String stredittext=data.getStringExtra(MyMessageHandler.EXTRA_MESSAGE);
 	         if(resultCode == RESULT_OK){	             
 	             Log.d("FGLSTATE", "onActivityResult(): result OK. message  empfangen = " + stredittext);
 	             this.setMessageCurrent(stredittext);
@@ -222,25 +220,25 @@ public class MainActivity extends ActionBarActivity {
 		if(sMessageCurrent!=null){
 	    	//Sollte man nun irgendwie den String zurück-/einsetzen?
 	    	EditText editText = (EditText) findViewById(R.id.edit_message);
-			editText.setText(sMessageCurrent + " " + this.MESSAGE_ADDITION_VARIABLE);
+			editText.setText(sMessageCurrent + MyMessageHandler.MESSAGE_ADDITION_VARIABLE);
 		}else{
 			//Das ist der Normalefall: Die Variable ist nämlich weg.
 			//Nun Versuch sie in inStop() über einen Intent.getExtras zu sichern und hier wiederherzustellen
-			sMessageCurrent=getIntent().getStringExtra(MainActivity.RESUME_MESSAGE);
+			sMessageCurrent=getIntent().getStringExtra(MyMessageHandler.RESUME_MESSAGE);
 			Log.d("FGLSTATE", "onResume(): Wert per intent sMessageCurrent = " + sMessageCurrent);
 			
 			//DAS FUNKTIONIERT AUCH NICHT!!!
 			if(sMessageCurrent!=null){
 				EditText editText = (EditText) findViewById(R.id.edit_message);
-				editText.setText(sMessageCurrent + " " + this.MESSAGE_ADDITION_INTENT);
+				editText.setText(sMessageCurrent + MyMessageHandler.MESSAGE_ADDITION_INTENT);
 			}else{
 				Bundle bundle = getIntent().getExtras();
 				if(bundle!=null){
-					sMessageCurrent = bundle.getString(this.RESUME_MESSAGE_BUNDLE);
+					sMessageCurrent = bundle.getString(MyMessageHandler.RESUME_MESSAGE_BUNDLE);
 					Log.d("FGLSTATE", "onResume(): Wert per intent und bundle sMessageCurrent = " + sMessageCurrent);
 					
 					EditText editText = (EditText) findViewById(R.id.edit_message);
-					editText.setText(sMessageCurrent + " " + this.MESSAGE_ADDITION_BUNDLE);
+					editText.setText(sMessageCurrent + MyMessageHandler.MESSAGE_ADDITION_BUNDLE);
 				}else{
 					Log.d("FGLSTATE", "onResume(): Bundle ist auch im neuen intent leer");
 					
@@ -265,13 +263,13 @@ public class MainActivity extends ActionBarActivity {
 		EditText editText = (EditText) findViewById(R.id.edit_message);
 		String message = editText.getText().toString();			
 		Log.d("FGLSTATE", "onStop() - Sicher Message in intent weg: " + message);
-		getIntent().putExtra(RESUME_MESSAGE, message);
+		getIntent().putExtra(MyMessageHandler.RESUME_MESSAGE, message);
 		
 		//ABER: So kann der Wert nicht in der gleichen Activity wiedergeholte werden.
 
 		//Versuch 2:
 		Bundle bundle = new Bundle();
-        bundle.putString(this.RESUME_MESSAGE_BUNDLE, message);
+        bundle.putString(MyMessageHandler.RESUME_MESSAGE_BUNDLE, message);
         getIntent().putExtras(bundle);
         
         //Versuch 3: Mit neuem Intent UND der überschriebenenen Methode onNewIntent()
@@ -280,7 +278,7 @@ public class MainActivity extends ActionBarActivity {
         Intent intent = new Intent();
         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         Bundle bundle02 = new Bundle();
-        bundle02.putString(this.RESUME_MESSAGE_BUNDLE, message);
+        bundle02.putString(MyMessageHandler.RESUME_MESSAGE_BUNDLE, message);
         intent.putExtras(bundle02);
 		
         super.onStop();
@@ -320,7 +318,7 @@ public class MainActivity extends ActionBarActivity {
 				
 				//GRUND: SERIALIZIERUNG geht nur mit expliziter Klasse, ggf. reicht auch hier ein "dreckiger" Typecast
 				String sMessage = this.getMessageCurrent();
-				outState.putSerializable(this.KEY_MESSAGE_CURRENT, sMessage); //liste darf nicht das Interface sein, sondern muss explizit die Klasse ArrayList sein.
+				outState.putSerializable(MyMessageHandler.KEY_MESSAGE_CURRENT, sMessage); //liste darf nicht das Interface sein, sondern muss explizit die Klasse ArrayList sein.
 				super.onSaveInstanceState(outState);
 	}
 	
@@ -341,8 +339,8 @@ public class MainActivity extends ActionBarActivity {
 		
 		
 		//GRUND: SERIALIZIERUNG geht nur mit expliziter Klasse, ggf. reicht auch hier ein "dreckiger" Typecast		
-		String sMessage = (String) inState.get(this.KEY_MESSAGE_CURRENT);
-		Log.d("FGLSTATE", "onResteroreInstanceState() mit sMessage="+sMessage);
+		String sMessage = (String) inState.get(MyMessageHandler.KEY_MESSAGE_CURRENT);
+		Log.d("FGLSTATE", "onRestoreInstanceState() mit sMessage="+sMessage);
 		this.setMessageCurrent(sMessage);	
 		
 		//klappst so nicht, versuche die Methode der Elternklasse danach aufzurufen.

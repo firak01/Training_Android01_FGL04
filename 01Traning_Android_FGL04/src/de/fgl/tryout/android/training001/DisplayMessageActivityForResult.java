@@ -13,10 +13,9 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 public class DisplayMessageActivityForResult extends Activity {
-	public final static String RESUME_MESSAGE_BUNDLE = "de.fgl.tryout.android.training001.MainAcitvity.RESUMEMESSAGEBUNDLE";
+	//public final static String RESUME_MESSAGE_BUNDLE = "de.fgl.tryout.android.training001.MainAcitvity.RESUMEMESSAGEBUNDLE";
 	
-	//TODO GOON: Das Behandeln der Message in eine Extra Klasse packen, so dass man nicht alles redundant hat.
-	public final static String EXTRA_MESSAGE = "de.fgl.tryout.android.training001.MainAcitvity.MESSAGE";
+	//TODO GOON: Das Behandeln der Message in eine Extra Klasse packen, so dass man nicht alles redundant hat.	
 	private String sMessageCurrent;
 	
 	/**
@@ -43,7 +42,7 @@ public class DisplayMessageActivityForResult extends Activity {
 		//++++++++++++++++++++++++++++++++++++++++++++++
 				// Get the message from the intent
 				Intent intent = getIntent();
-				String message = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
+				String message = intent.getStringExtra(MyMessageHandler.EXTRA_MESSAGE);
 				this.setMessageCurrent(message);
 				//++++++++++++++++++++++++++++++++++++++++++++++
 				int iColor;
@@ -119,7 +118,7 @@ public class DisplayMessageActivityForResult extends Activity {
 		
 		String message = this.getMessageCurrent() + " (als Result)";
 		Intent data = new Intent();
-		data.putExtra(EXTRA_MESSAGE, message);
+		data.putExtra(MyMessageHandler.EXTRA_MESSAGE, message);
 		setResult(Activity.RESULT_OK, data);
 		
 		//Wichtig: Erst den Intent bauen und dann erst finish() der Elternklasse aufrufen.

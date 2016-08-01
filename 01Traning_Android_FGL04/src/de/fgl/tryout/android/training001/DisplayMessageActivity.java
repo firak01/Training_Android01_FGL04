@@ -18,8 +18,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.os.Build;
 
-public class DisplayMessageActivity extends ActionBarActivity { //Activity
-	public final static String RESUME_MESSAGE_BUNDLE = "de.fgl.tryout.android.training001.MainAcitvity.RESUMEMESSAGEBUNDLE";
+public class DisplayMessageActivity extends ActionBarActivity { //Activity	
 	private String sMessageCurrent;
 	
 	/**
@@ -43,7 +42,7 @@ public class DisplayMessageActivity extends ActionBarActivity { //Activity
 		//++++++++++++++++++++++++++++++++++++++++++++++
 		// Get the message from the intent
 		Intent intent = getIntent();
-		String message = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
+		String message = intent.getStringExtra(MyMessageHandler.EXTRA_MESSAGE);
 		this.setMessageCurrent(message);
 		//++++++++++++++++++++++++++++++++++++++++++++++
 		int iColor;
@@ -129,7 +128,7 @@ public class DisplayMessageActivity extends ActionBarActivity { //Activity
 			
 			//Versuch X: Gib an die aufgerufene Funktion den Wert zurück
     		Bundle bundle = new Bundle();
-            bundle.putString(this.RESUME_MESSAGE_BUNDLE, this.getMessageCurrent());
+            bundle.putString(MyMessageHandler.RESUME_MESSAGE_BUNDLE, this.getMessageCurrent());
             //natürlich nicht in den Intent Packen, der dieser Activity beim Start mitgegeben worden ist getIntent().putExtras(bundle);
             
             //Start an intent mit dem Ziel diesen in der onResume Methpde entgegenzunehmen.
